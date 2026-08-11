@@ -28,7 +28,8 @@ async function remote<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...(init.headers as Record<string, string>),
   };
   if (authToken && !path.startsWith("auth/login") && path !== "login") {
-    headers.Authorization = `Bearer ${authToken}`;
+    // Do not use Authorization: Bearer — Wasp session middleware may intercept it.
+    headers["X-PaySuite-Token"] = authToken;
   }
   const res = await fetch(`${API_BASE_URL}/api/mobile/${path}`, {
     ...init,

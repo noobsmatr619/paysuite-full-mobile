@@ -51,8 +51,8 @@ export default function LoginScreen() {
         <Field
           label={
             USE_REMOTE_API
-              ? "Password (or MOBILE_SHARED_PASSWORD)"
-              : "Password (any for demo)"
+              ? "Password (same as web signup)"
+              : "Password (any for offline demo)"
           }
           secureTextEntry
           autoCapitalize="none"
@@ -79,7 +79,7 @@ export default function LoginScreen() {
           }}
         >
           {USE_REMOTE_API
-            ? "Remote mode: set EXPO_PUBLIC_API_URL to your Wasp server (e.g. http://YOUR_HOST:3001 — not :3000). Login returns a JWT."
+            ? "Remote: EXPO_PUBLIC_API_URL=http://HOST:3011 (server port, not client). Uses real Wasp password + JWT (X-PaySuite-Token)."
             : "Offline demo mode with seeded local data. No backend required."}
         </Text>
       </KeyboardAvoidingView>
