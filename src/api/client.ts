@@ -94,8 +94,10 @@ export const api = {
     data: Omit<Product, "id">,
   ): Promise<Product> {
     if (USE_REMOTE_API) {
-      // not wired on remote yet — fall back local for create demo
-      return localStore.createProduct(data);
+      return remote("products", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
     }
     return localStore.createProduct(data);
   },

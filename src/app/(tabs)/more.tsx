@@ -17,6 +17,7 @@ const links = [
   { title: "Expenses", href: "/expenses" },
   { title: "Tickets", href: "/tickets" },
   { title: "Billing / plans", href: "/billing" },
+  { title: "Transactions", href: "/transactions" },
   { title: "Profile", href: "/profile" },
 ] as const;
 
