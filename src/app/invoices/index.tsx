@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import { FlatList, RefreshControl, View } from "react-native";
+import { Alert, FlatList, RefreshControl, View } from "react-native";
 import { useFocusEffect } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { api } from "@/api/client";
 import type { Invoice } from "@/types/paysuite";
 import {
@@ -30,6 +31,16 @@ export default function InvoicesScreen() {
     }, [load]),
   );
 
+  async function openPdf(id: string) {
+    try {
+      const doc = await api.invoiceDocument(id);
+      const html = encodeURIComponent(doc.html);
+      await WebBrowser.openBrowserAsync(`data:text/html;charset=utf-8,${html}`);
+    } catch (e: any) {
+      Alert.alert("PDF", e?.message || "Could not open document");
+    }
+  }
+
   if (loading && !rows.length) {
     return (
       <Screen>
@@ -51,8 +62,9 @@ export default function InvoicesScreen() {
           renderItem={({ item }) => (
             <RowItem
               title={item.invoiceFullNumber}
-              subtitle={`${item.customer?.firstName || "Customer"} · ${item.status}`}
+              subtitle={`${item.customer?.firstName || "Customer"} · ${item.status} · tap for PDF`}
               right={money(item.dueAmount ?? item.grandTotal - item.receivedAmount)}
+              onPress={() => openPdf(item.id)}
             />
           )}
         />

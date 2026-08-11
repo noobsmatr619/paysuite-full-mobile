@@ -27,7 +27,7 @@ No backend required. Seeded local data is used.
 
 ### Remote Wasp API
 
-Point the app at your Wasp **server** (not the web client, and **not** port 3000 by default):
+Point the app at your Wasp **server** (not the web client, and **not** port 3000):
 
 ```bash
 # Example: Wasp server on 3001
@@ -35,12 +35,13 @@ export EXPO_PUBLIC_API_URL="http://YOUR_HOST:3001"
 npm start
 ```
 
-Login:
+Login hits `POST /api/mobile/auth/login` and stores a **JWT**.
 
-- **Email**: any / your user email  
-- **Password field**: Wasp `User.id` UUID (dev bearer token). Production should use real JWT auth.
+- Dev: password length ≥ 4 for an existing user email  
+- Or set `MOBILE_SHARED_PASSWORD` on the server  
+- Or paste a token from Wasp **Settings → Issue mobile token** as password with matching email  
 
-Mobile routes are served by Wasp at `/api/mobile/*`.
+Invoice rows open a print-ready HTML document from `GET /api/mobile/invoices/:id/document`.
 
 ## Project map
 

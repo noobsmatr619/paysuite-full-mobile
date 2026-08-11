@@ -51,10 +51,10 @@ export default function LoginScreen() {
         <Field
           label={
             USE_REMOTE_API
-              ? "Token (Wasp user id)"
+              ? "Password (or MOBILE_SHARED_PASSWORD)"
               : "Password (any for demo)"
           }
-          secureTextEntry={!USE_REMOTE_API}
+          secureTextEntry
           autoCapitalize="none"
           value={password}
           onChangeText={setPassword}
@@ -79,7 +79,7 @@ export default function LoginScreen() {
           }}
         >
           {USE_REMOTE_API
-            ? "Remote mode: set EXPO_PUBLIC_API_URL to your Wasp server (e.g. http://YOUR_HOST:3001). Password field is the user UUID token."
+            ? "Remote mode: set EXPO_PUBLIC_API_URL to your Wasp server (e.g. http://YOUR_HOST:3001 — not :3000). Login returns a JWT."
             : "Offline demo mode with seeded local data. No backend required."}
         </Text>
       </KeyboardAvoidingView>

@@ -22,18 +22,19 @@ export function getAuthToken() {
   return authToken;
 }
 
-async function remote<T>(
-  path: string,
-  init: RequestInit = {},
-): Promise<T> {
-  if (!authToken) throw new Error("Not authenticated");
+async function remote<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(init.headers as Record<string, string>),
+  };
+  // Login has no bearer yet
+  if (authToken && !path.startsWith("auth/login") && path !== "login") {
+    headers.Authorization = `Bearer ${authToken}`;
+  }
+
   const res = await fetch(`${API_BASE_URL}/api/mobile/${path}`, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
-      ...(init.headers || {}),
-    },
+    headers,
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -43,12 +44,21 @@ async function remote<T>(
 }
 
 export const api = {
-  async login(email: string, _password: string): Promise<UserProfile> {
+  /**
+   * Remote: POST /api/mobile/auth/login → JWT
+   * Local: offline demo store
+   */
+  async login(email: string, password: string): Promise<UserProfile> {
     if (USE_REMOTE_API) {
-      // Dev bridge: treat password as user UUID token from Wasp admin/DB
-      // Production should call a real auth endpoint.
-      setAuthToken(_password || email);
-      return remote<UserProfile>("my-profile");
+      const res = await remote<{
+        token: string;
+        user: UserProfile;
+      }>("auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+      setAuthToken(res.token);
+      return res.user;
     }
     return localStore.login(email);
   },
@@ -85,14 +95,20 @@ export const api = {
     return localStore.invoices();
   },
 
+  async invoiceDocument(id: string): Promise<{ html: string; fullNumber: string }> {
+    if (USE_REMOTE_API) return remote(`invoices/${id}/document`);
+    return {
+      fullNumber: "INV-DEMO",
+      html: "<html><body><h1>Demo invoice PDF</h1><p>Connect EXPO_PUBLIC_API_URL for real docs.</p></body></html>",
+    };
+  },
+
   async products(): Promise<Product[]> {
     if (USE_REMOTE_API) return remote("products");
     return localStore.products();
   },
 
-  async createProduct(
-    data: Omit<Product, "id">,
-  ): Promise<Product> {
+  async createProduct(data: Omit<Product, "id">): Promise<Product> {
     if (USE_REMOTE_API) {
       return remote("products", {
         method: "POST",
