@@ -17,18 +17,21 @@ import { Colors } from "@/constants/theme";
 SplashScreen.preventAutoHideAsync();
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, restoring } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
+    // Hold every redirect until the stored token has been checked, otherwise a
+    // returning user is bounced to login before the session finishes loading.
+    if (restoring) return;
     const inAuth = segments[0] === "(auth)";
     if (!user && !inAuth) {
       router.replace("/(auth)/login");
     } else if (user && inAuth) {
       router.replace("/(tabs)");
     }
-  }, [user, segments]);
+  }, [user, restoring, segments]);
 
   return <>{children}</>;
 }
