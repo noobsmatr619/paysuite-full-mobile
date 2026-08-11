@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "paysuite_full_mobile",
-    "slug": "paysuite_full_mobile",
+    "name": "PaySuite",
+    "slug": "paysuite",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

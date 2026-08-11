@@ -1,56 +1,59 @@
-# Welcome to your Expo app 👋
+# PaySuite Mobile (Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo / React Native client for **PaySuite**, converted from the original Flutter app (`paysuite/main/PaySuite`).
 
-## Get started
+> Source Laravel/Flutter code in `paysuite/` is **never modified**.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- Auth gate (demo local store or remote Wasp API)
+- Dashboard: revenue, paid, due, expenses, counts, recent payments
+- Customers (list + create)
+- Invoices, estimates, products, expenses, tickets
+- Billing / plan tiers
+- Profile + sign out
+- Dark / light theme
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Run
 
 ```bash
-npm run reset-project
+npm install
+npm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Demo mode (default)
 
-### Other setup steps
+No backend required. Seeded local data is used.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Remote Wasp API
 
-## Learn more
+Point the app at your Wasp **server** (not the web client, and **not** port 3000 by default):
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+# Example: Wasp server on 3001
+export EXPO_PUBLIC_API_URL="http://YOUR_HOST:3001"
+npm start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Login:
 
-## Join the community
+- **Email**: any / your user email  
+- **Password field**: Wasp `User.id` UUID (dev bearer token). Production should use real JWT auth.
 
-Join our community of developers creating universal apps.
+Mobile routes are served by Wasp at `/api/mobile/*`.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Project map
+
+| Path | Role |
+|------|------|
+| `src/api/` | Remote client + offline local store |
+| `src/app/(auth)` | Login |
+| `src/app/(tabs)` | Dashboard + menu |
+| `src/app/customers` … | Domain screens (mirrors Flutter modules) |
+| `src/types/paysuite.ts` | Shared domain types |
+
+## Pairing backend
+
+Use the sibling project:
+
+`../paysuite_wasp/app`
