@@ -99,16 +99,19 @@ export function RowItem({
   subtitle,
   right,
   onPress,
+  onLongPress,
 }: {
   title: string;
   subtitle?: string;
   right?: string;
   onPress?: () => void;
+  onLongPress?: () => void;
 }) {
   const c = useThemeColors();
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={onLongPress}
       style={[styles.row, { backgroundColor: c.card, borderColor: c.border }]}
     >
       <View style={{ flex: 1 }}>

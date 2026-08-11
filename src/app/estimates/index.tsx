@@ -3,7 +3,14 @@ import { FlatList, RefreshControl, View } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/api/client";
 import type { Estimate } from "@/types/paysuite";
-import { Empty, Loading, money, RowItem, Screen } from "@/components/ui";
+import {
+  Empty,
+  Loading,
+  money,
+  PrimaryButton,
+  RowItem,
+  Screen,
+} from "@/components/ui";
 
 export default function EstimatesScreen() {
   const router = useRouter();
@@ -36,7 +43,10 @@ export default function EstimatesScreen() {
   return (
     <Screen>
       <View style={{ padding: 16, flex: 1 }}>
-        <PrimaryButton label="New estimate" onPress={() => router.push("/estimates/new")} />
+        <PrimaryButton
+          label="New estimate"
+          onPress={() => router.push("/estimates/new")}
+        />
         <FlatList
           style={{ marginTop: 12 }}
           data={rows}
@@ -50,6 +60,7 @@ export default function EstimatesScreen() {
               title={item.estimateFullNumber}
               subtitle={`${item.customer?.firstName || "Customer"} · ${item.status}`}
               right={money(item.grandTotal)}
+              onPress={() => router.push(`/estimates/${item.id}` as any)}
             />
           )}
         />

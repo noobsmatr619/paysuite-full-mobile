@@ -120,6 +120,38 @@ export default function RootLayout() {
               name="profile/index"
               options={{ headerShown: true, title: "Profile" }}
             />
+            <Stack.Screen
+              name="invoices/[id]"
+              options={{ headerShown: true, title: "Invoice" }}
+            />
+            <Stack.Screen
+              name="customers/[id]"
+              options={{ headerShown: true, title: "Customer" }}
+            />
+            <Stack.Screen
+              name="estimates/[id]"
+              options={{ headerShown: true, title: "Estimate" }}
+            />
+            <Stack.Screen
+              name="tickets/[id]"
+              options={{ headerShown: true, title: "Ticket" }}
+            />
+            <Stack.Screen
+              name="notifications/index"
+              options={{ headerShown: true, title: "Notifications" }}
+            />
+            <Stack.Screen
+              name="settings/index"
+              options={{ headerShown: true, title: "Settings" }}
+            />
+            <Stack.Screen
+              name="users/index"
+              options={{ headerShown: true, title: "Users" }}
+            />
+            <Stack.Screen
+              name="plan-expired/index"
+              options={{ headerShown: true, title: "Plan" }}
+            />
           </Stack>
         </AuthGate>
       </ThemeProvider>

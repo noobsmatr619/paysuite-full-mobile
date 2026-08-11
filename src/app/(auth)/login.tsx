@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import {
   Field,
@@ -14,6 +15,7 @@ import { USE_REMOTE_API } from "@/constants/config";
 
 export default function LoginScreen() {
   const { login, loading } = useAuth();
+  const router = useRouter();
   const c = useThemeColors();
   const [email, setEmail] = useState("demo@paysuite.app");
   const [password, setPassword] = useState("demo");
@@ -69,6 +71,19 @@ export default function LoginScreen() {
           onPress={onLogin}
           disabled={loading || !email}
         />
+
+        <Text
+          onPress={() => router.push("/(auth)/register")}
+          style={{ color: c.primary, marginTop: 16, fontWeight: "600" }}
+        >
+          Create account
+        </Text>
+        <Text
+          onPress={() => router.push("/(auth)/forgot-password")}
+          style={{ color: c.primary, marginTop: 10, fontWeight: "600" }}
+        >
+          Forgot password?
+        </Text>
 
         <Text
           style={{

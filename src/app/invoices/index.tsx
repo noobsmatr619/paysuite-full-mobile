@@ -66,9 +66,10 @@ export default function InvoicesScreen() {
           renderItem={({ item }) => (
             <RowItem
               title={item.invoiceFullNumber}
-              subtitle={`${item.customer?.firstName || "Customer"} · ${item.status} · tap for PDF`}
+              subtitle={`${item.customer?.firstName || "Customer"} · ${item.status}`}
               right={money(item.dueAmount ?? item.grandTotal - item.receivedAmount)}
-              onPress={() => openPdf(item.id)}
+              onPress={() => router.push(`/invoices/${item.id}` as any)}
+              onLongPress={() => openPdf(item.id)}
             />
           )}
         />

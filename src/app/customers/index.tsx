@@ -59,6 +59,7 @@ export default function CustomersScreen() {
               title={`${item.firstName} ${item.lastName || ""}`.trim()}
               subtitle={item.companyName || item.email || "—"}
               right={item.status}
+              onPress={() => router.push(`/customers/${item.id}` as any)}
             />
           )}
         />

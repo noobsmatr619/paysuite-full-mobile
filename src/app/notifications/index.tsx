@@ -1,25 +1,24 @@
 import { useCallback, useState } from "react";
 import { FlatList, RefreshControl, View } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { api } from "@/api/client";
-import type { Ticket } from "@/types/paysuite";
 import {
   Empty,
   Loading,
   PrimaryButton,
   RowItem,
   Screen,
+  Title,
 } from "@/components/ui";
 
-export default function TicketsScreen() {
-  const router = useRouter();
-  const [rows, setRows] = useState<Ticket[]>([]);
+export default function NotificationsScreen() {
+  const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      setRows(await api.tickets());
+      setRows((await api.notifications()) as any[]);
     } finally {
       setLoading(false);
     }
@@ -42,9 +41,13 @@ export default function TicketsScreen() {
   return (
     <Screen>
       <View style={{ padding: 16, flex: 1 }}>
+        <Title>Notifications</Title>
         <PrimaryButton
-          label="New ticket"
-          onPress={() => router.push("/tickets/new")}
+          label="Mark all read"
+          onPress={async () => {
+            await api.markAllNotificationsRead();
+            load();
+          }}
         />
         <FlatList
           style={{ marginTop: 12 }}
@@ -53,13 +56,18 @@ export default function TicketsScreen() {
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />
           }
-          ListEmptyComponent={<Empty text="No tickets yet" />}
+          ListEmptyComponent={<Empty text="No notifications" />}
           renderItem={({ item }) => (
             <RowItem
-              title={item.subject}
-              subtitle={`${item.department?.name || "Dept"} · ${item.priority?.name || "Priority"}`}
-              right={item.status}
-              onPress={() => router.push(`/tickets/${item.id}` as any)}
+              title={item.title}
+              subtitle={item.body}
+              right={item.isRead ? "read" : "new"}
+              onPress={async () => {
+                if (!item.isRead) {
+                  await api.markNotificationRead(item.id);
+                  load();
+                }
+              }}
             />
           )}
         />
