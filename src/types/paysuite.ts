@@ -85,3 +85,23 @@ export type UserProfile = {
   taxNo?: string | null;
   tenantId?: string | null;
 };
+
+export type Plan = {
+  id: string;
+  name: string;
+  price: number;
+  frequency: string;
+  numberOfCustomers?: number;
+  numberOfProducts?: number;
+  numberOfInvoices?: number;
+};
+
+export type MyPlan = {
+  subscriber: { plan: Plan } | null;
+};
+
+export type DocumentPayload = {
+  fullNumber: string;
+  html: string;
+  pdfBase64: string | null;
+};

@@ -3,7 +3,7 @@ import { FlatList, RefreshControl, View } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/api/client";
 import type { Expense } from "@/types/paysuite";
-import { Empty, Loading, money, RowItem, Screen } from "@/components/ui";
+import { Empty, Loading, money, PrimaryButton, RowItem, Screen } from "@/components/ui";
 
 export default function ExpensesScreen() {
   const router = useRouter();

@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { api } from "@/api/client";
+import type { MyPlan, Plan } from "@/types/paysuite";
 import {
   Card,
   Loading,
@@ -12,8 +13,8 @@ import {
 } from "@/components/ui";
 
 export default function BillingScreen() {
-  const [plans, setPlans] = useState<any[]>([]);
-  const [myPlan, setMyPlan] = useState<any>(null);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [myPlan, setMyPlan] = useState<MyPlan | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {

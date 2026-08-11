@@ -2,9 +2,12 @@ import { API_BASE_URL, USE_REMOTE_API } from "@/constants/config";
 import type {
   Customer,
   DashboardStats,
+  DocumentPayload,
   Estimate,
   Expense,
   Invoice,
+  MyPlan,
+  Plan,
   Product,
   Ticket,
   Transaction,
@@ -199,8 +202,8 @@ export const api = {
       });
     throw new Error("Pay requires remote API");
   },
-  async invoiceDocument(id: string) {
-    if (USE_REMOTE_API) return remote(`invoices/${id}/document`);
+  async invoiceDocument(id: string): Promise<DocumentPayload> {
+    if (USE_REMOTE_API) return remote<DocumentPayload>(`invoices/${id}/document`);
     return {
       fullNumber: "INV-DEMO",
       html: "<html><body><h1>Demo</h1></body></html>",
@@ -249,8 +252,8 @@ export const api = {
       return remote(`estimates/${id}/convert`, { method: "POST", body: "{}" });
     throw new Error("Requires remote API");
   },
-  async estimateDocument(id: string) {
-    if (USE_REMOTE_API) return remote(`estimates/${id}/document`);
+  async estimateDocument(id: string): Promise<DocumentPayload> {
+    if (USE_REMOTE_API) return remote<DocumentPayload>(`estimates/${id}/document`);
     throw new Error("Requires remote API");
   },
   async expenses(): Promise<Expense[]> {
@@ -311,12 +314,12 @@ export const api = {
         body: JSON.stringify({ reason }),
       });
   },
-  async plans() {
-    if (USE_REMOTE_API) return remote("plans");
+  async plans(): Promise<Plan[]> {
+    if (USE_REMOTE_API) return remote<Plan[]>("plans");
     return [];
   },
-  async myPlan() {
-    if (USE_REMOTE_API) return remote("my-plan");
+  async myPlan(): Promise<MyPlan> {
+    if (USE_REMOTE_API) return remote<MyPlan>("my-plan");
     return { subscriber: null };
   },
   async activatePlan(planId: string) {
