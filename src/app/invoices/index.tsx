@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Alert, FlatList, RefreshControl, View } from "react-native";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { api } from "@/api/client";
 import type { Invoice } from "@/types/paysuite";
@@ -8,11 +8,13 @@ import {
   Empty,
   Loading,
   money,
+  PrimaryButton,
   RowItem,
   Screen,
 } from "@/components/ui";
 
 export default function InvoicesScreen() {
+  const router = useRouter();
   const [rows, setRows] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +54,9 @@ export default function InvoicesScreen() {
   return (
     <Screen>
       <View style={{ padding: 16, flex: 1 }}>
+        <PrimaryButton label="New invoice" onPress={() => router.push("/invoices/new")} />
         <FlatList
+          style={{ marginTop: 12 }}
           data={rows}
           keyExtractor={(i) => i.id}
           refreshControl={
