@@ -85,6 +85,10 @@ export default function RootLayout() {
               options={{ headerShown: true, title: "Estimates" }}
             />
             <Stack.Screen
+              name="estimates/new"
+              options={{ headerShown: true, title: "New estimate" }}
+            />
+            <Stack.Screen
               name="expenses/index"
               options={{ headerShown: true, title: "Expenses" }}
             />

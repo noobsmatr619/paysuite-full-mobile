@@ -8,40 +8,58 @@ import {
   Title,
 } from "@/components/ui";
 import { useAuth } from "@/context/AuthContext";
-
-const links = [
-  { title: "Customers", href: "/customers" },
-  { title: "Invoices", href: "/invoices" },
-  { title: "Estimates", href: "/estimates" },
-  { title: "Products", href: "/products" },
-  { title: "Expenses", href: "/expenses" },
-  { title: "Tickets", href: "/tickets" },
-  { title: "Billing / plans", href: "/billing" },
-  { title: "Transactions", href: "/transactions" },
-  { title: "Profile", href: "/profile" },
-] as const;
+import { useI18n } from "@/i18n";
 
 export default function MoreScreen() {
   const router = useRouter();
   const { logout, user } = useAuth();
+  const { t, lang, setLang, isRtl } = useI18n();
+
+  const links = [
+    { title: t("customers"), href: "/customers" },
+    { title: t("invoices"), href: "/invoices" },
+    { title: t("estimates"), href: "/estimates" },
+    { title: t("products"), href: "/products" },
+    { title: t("expenses"), href: "/expenses" },
+    { title: t("tickets"), href: "/tickets" },
+    { title: t("billing"), href: "/billing" },
+    { title: "Transactions", href: "/transactions" },
+    { title: t("profile"), href: "/profile" },
+  ] as const;
 
   return (
     <Screen>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        <Title>Menu</Title>
-        <Subtitle>{user?.email || "PaySuite modules"}</Subtitle>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: 40,
+          direction: isRtl ? "rtl" : "ltr",
+        }}
+      >
+        <Title>{t("menu")}</Title>
+        <Subtitle>{user?.email || t("appName")}</Subtitle>
+        <View style={{ marginTop: 12, flexDirection: "row", gap: 8 }}>
+          <PrimaryButton
+            label={lang === "en" ? "English ✓" : "English"}
+            onPress={() => setLang("en")}
+          />
+          <PrimaryButton
+            label={lang === "ar" ? "العربية ✓" : "العربية"}
+            onPress={() => setLang("ar")}
+          />
+        </View>
         <View style={{ marginTop: 16 }}>
           {links.map((l) => (
             <RowItem
               key={l.href}
               title={l.title}
-              subtitle="Open module"
+              subtitle={t("appName")}
               onPress={() => router.push(l.href as any)}
             />
           ))}
         </View>
         <View style={{ marginTop: 12 }}>
-          <PrimaryButton label="Sign out" onPress={() => logout()} />
+          <PrimaryButton label={t("signOut")} onPress={() => logout()} />
         </View>
       </ScrollView>
     </Screen>
