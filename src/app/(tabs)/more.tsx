@@ -27,6 +27,10 @@ export default function MoreScreen() {
     { title: "Notifications", href: "/notifications" },
     { title: "Settings", href: "/settings" },
     { title: "Users", href: "/users" },
+    { title: "Roles", href: "/roles" },
+    { title: "Taxes", href: "/taxes" },
+    { title: "Payment methods", href: "/payment-methods" },
+    { title: "Expense categories", href: "/categories" },
     { title: "Plan / renew", href: "/plan-expired" },
     { title: t("profile"), href: "/profile" },
   ] as const;
