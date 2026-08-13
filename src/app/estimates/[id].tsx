@@ -80,6 +80,17 @@ export default function EstimateDetailScreen() {
               }
             }}
           />
+          <PrimaryButton
+            label="Resend to customer"
+            onPress={async () => {
+              try {
+                const r: any = await api.resendEstimateMail(String(id));
+                Alert.alert("Sent", r?.result?.to ? `Sent to ${r.result.to}` : "Estimate sent");
+              } catch (e: any) {
+                Alert.alert("Resend", e?.message || "Failed");
+              }
+            }}
+          />
         </View>
       </ScrollView>
     </Screen>

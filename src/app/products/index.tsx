@@ -12,11 +12,13 @@ import {
   Screen,
 } from "@/components/ui";
 import { ListFilter, useListFilter } from "@/components/ListFilter";
+import { RowActions } from "@/components/RowActions";
 
 export default function ProductsScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<Product | null>(null);
   const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
     rows,
     (r) => [r.name, r.code],
@@ -71,10 +73,35 @@ export default function ProductsScreen() {
               title={item.name}
               subtitle={item.code || "No code"}
               right={money(item.price)}
+              onPress={() => setSelected(item)}
             />
           )}
         />
       </View>
+
+      <RowActions
+        visible={!!selected}
+        title={selected?.name}
+        onClose={() => setSelected(null)}
+        actions={[
+          {
+            label: "Edit",
+            permission: "products.manage",
+            onPress: () =>
+              router.push({ pathname: "/products/new", params: { id: selected!.id } }),
+          },
+          {
+            label: "Delete",
+            permission: "products.manage",
+            destructive: true,
+            confirm: "This removes the product permanently.",
+            onPress: async () => {
+              await api.deleteProduct(selected!.id);
+              await load();
+            },
+          },
+        ]}
+      />
     </Screen>
   );
 }

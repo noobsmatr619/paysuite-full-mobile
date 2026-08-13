@@ -6,6 +6,7 @@ import type { MyPlan, Plan } from "@/types/paysuite";
 import {
   Card,
   Loading,
+  RowItem,
   Screen,
   Subtitle,
   Title,
@@ -16,18 +17,24 @@ import { ListFilter, useListFilter } from "@/components/ListFilter";
 export default function BillingScreen() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [myPlan, setMyPlan] = useState<MyPlan | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { query, setQuery, filtered } = useListFilter(plans as any[], (r: any) => [r.planName, r.status, r.reference]);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [p, m] = await Promise.all([
+      const [p, m, h, st] = await Promise.all([
         api.plans().catch(() => []),
         api.myPlan().catch(() => ({ subscriber: null })),
+        api.billings().catch(() => []),
+        api.subscriptionStatus().catch(() => null),
       ]);
       setPlans(p || []);
       setMyPlan(m);
+      setHistory((h as any[]) ?? []);
+      setSubscription(st);
     } finally {
       setLoading(false);
     }
@@ -64,6 +71,15 @@ export default function BillingScreen() {
               {money(myPlan.subscriber.plan.price)} /{" "}
               {myPlan.subscriber.plan.frequency}
             </Subtitle>
+            {!!subscription && (
+              <Subtitle>
+                {subscription.expired
+                  ? "Expired — renew to keep using the app"
+                  : subscription.endDate
+                    ? `Renews ${new Date(subscription.endDate).toLocaleDateString()}`
+                    : "Active"}
+              </Subtitle>
+            )}
           </Card>
         ) : (
           <Subtitle>
@@ -109,6 +125,24 @@ export default function BillingScreen() {
             </View>
           </Card>
         ))}
+
+        {/* Flutter's billing_history screen, reached from home and the
+            plan-expired screen. */}
+        <Title>Billing history</Title>
+        {history.length === 0 ? (
+          <Subtitle>No billing history yet.</Subtitle>
+        ) : (
+          history.map((b: any) => (
+            <RowItem
+              key={b.id}
+              title={b.invoiceNumber}
+              subtitle={`${b.plan?.name ?? "Plan"} · ${b.status}${
+                b.paymentMethod?.name ? ` · ${b.paymentMethod.name}` : ""
+              } · ${new Date(b.createdAt).toLocaleDateString()}`}
+              right={money(b.amount)}
+            />
+          ))
+        )}
       </ScrollView>
     </Screen>
   );

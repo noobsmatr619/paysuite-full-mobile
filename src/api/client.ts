@@ -219,6 +219,10 @@ export const api = {
       return remote("products", { method: "POST", body: JSON.stringify(data) });
     return localStore.createProduct(data);
   },
+  async product(id: string): Promise<Product | undefined> {
+    if (USE_REMOTE_API) return remote(`products/${id}`);
+    return (await localStore.products()).find((p: any) => p.id === id);
+  },
   async updateProduct(id: string, data: any) {
     if (USE_REMOTE_API)
       return remote(`products/${id}`, {
@@ -251,6 +255,16 @@ export const api = {
     if (USE_REMOTE_API)
       return remote(`estimates/${id}/convert`, { method: "POST", body: "{}" });
     throw new Error("Requires remote API");
+  },
+  async resendEstimateMail(id: string) {
+    if (USE_REMOTE_API) return remote(`estimates/${id}/resend-mail`);
+  },
+  async rateTicket(id: string, rating: number) {
+    if (USE_REMOTE_API)
+      return remote(`tickets/${id}/rating`, {
+        method: "POST",
+        body: JSON.stringify({ rating }),
+      });
   },
   async estimateDocument(id: string): Promise<DocumentPayload> {
     if (USE_REMOTE_API) return remote<DocumentPayload>(`estimates/${id}/document`);

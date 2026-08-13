@@ -5,11 +5,13 @@ import { api } from "@/api/client";
 import type { Expense } from "@/types/paysuite";
 import { Empty, Loading, money, PrimaryButton, RowItem, Screen } from "@/components/ui";
 import { ListFilter, useListFilter } from "@/components/ListFilter";
+import { RowActions } from "@/components/RowActions";
 
 export default function ExpensesScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<Expense | null>(null);
   const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
     rows,
     (r) => [r.title, r.category?.name],
@@ -61,10 +63,29 @@ export default function ExpensesScreen() {
               title={item.title}
               subtitle={`${item.category?.name || "Expense"} · ${new Date(item.date).toLocaleDateString()}`}
               right={money(item.amount)}
+              onPress={() => setSelected(item)}
             />
           )}
         />
       </View>
+
+      <RowActions
+        visible={!!selected}
+        title={selected?.title}
+        onClose={() => setSelected(null)}
+        actions={[
+          {
+            label: "Delete",
+            permission: "expenses.manage",
+            destructive: true,
+            confirm: "This removes the expense permanently.",
+            onPress: async () => {
+              await api.deleteExpense(selected!.id);
+              await load();
+            },
+          },
+        ]}
+      />
     </Screen>
   );
 }
