@@ -94,8 +94,8 @@ export default function LoginScreen() {
           }}
         >
           {USE_REMOTE_API
-            ? "Remote: EXPO_PUBLIC_API_URL=http://HOST:3011 (server port, not client). Uses real Wasp password + JWT (X-PaySuite-Token)."
-            : "Offline demo mode with seeded local data. No backend required."}
+            ? "Sign in with your PaySuite account."
+            : "Offline demo — explore with sample data, no account needed."}
         </Text>
       </KeyboardAvoidingView>
     </Screen>
