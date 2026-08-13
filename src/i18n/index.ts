@@ -1,4 +1,6 @@
 import { useSyncExternalStore } from "react";
+import { Platform } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 export type Lang = "en" | "ar";
 
@@ -49,6 +51,11 @@ const dict = {
 
 export type DictKey = keyof typeof dict.en;
 
+const STORAGE_KEY = "paysuite_lang";
+
+// SecureStore on native, localStorage on web — the same split api/session.ts uses.
+const isWeb = Platform.OS === "web";
+
 let lang: Lang = "en";
 const listeners = new Set<() => void>();
 
@@ -57,8 +64,39 @@ export function getLang() {
 }
 
 export function setLang(next: Lang) {
+  if (next === lang) return;
   lang = next;
+  void persist(next);
   listeners.forEach((l) => l());
+}
+
+async function persist(next: Lang) {
+  try {
+    if (isWeb) {
+      if (typeof localStorage !== "undefined") localStorage.setItem(STORAGE_KEY, next);
+      return;
+    }
+    await SecureStore.setItemAsync(STORAGE_KEY, next);
+  } catch {
+    // Storage unavailable — the choice still holds for this launch.
+  }
+}
+
+/** Load the stored language. Safe to call more than once. */
+export async function restoreLang() {
+  try {
+    const stored = isWeb
+      ? typeof localStorage !== "undefined"
+        ? localStorage.getItem(STORAGE_KEY)
+        : null
+      : await SecureStore.getItemAsync(STORAGE_KEY);
+    if (stored === "en" || stored === "ar") {
+      lang = stored;
+      listeners.forEach((l) => l());
+    }
+  } catch {
+    /* storage unavailable */
+  }
 }
 
 export function t(key: DictKey): string {

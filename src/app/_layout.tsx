@@ -10,6 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { restoreLang } from "@/i18n";
 import { Colors } from "@/constants/theme";
 
 // Note: do not default API calls to localhost:3000 — see src/constants/config.ts
@@ -20,6 +21,10 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const { user, restoring } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+
+  useEffect(() => {
+    void restoreLang();
+  }, []);
 
   useEffect(() => {
     // Hold every redirect until the stored token has been checked, otherwise a
