@@ -3,6 +3,7 @@ import { FlatList, RefreshControl, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { api } from "@/api/client";
 import { Empty, Loading, RowItem, Screen, Title } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 type Role = { id: string; name: string; description?: string; permissions?: string };
 
@@ -10,6 +11,7 @@ type Role = { id: string; name: string; description?: string; permissions?: stri
 export default function RolesScreen() {
   const [rows, setRows] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, filtered } = useListFilter(rows as any[], (r: any) => [r.name, r.description]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -49,8 +51,9 @@ export default function RolesScreen() {
       <View style={{ padding: 16, flex: 1 }}>
         <Title>Roles</Title>
         <FlatList
+          ListHeaderComponent={<ListFilter query={query} onQuery={setQuery} placeholder="Search roles" />}
           style={{ marginTop: 14 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}
           ListEmptyComponent={<Empty text="No roles yet" />}

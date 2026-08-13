@@ -11,11 +11,13 @@ import {
   Title,
   money,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function BillingScreen() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [myPlan, setMyPlan] = useState<MyPlan | null>(null);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, filtered } = useListFilter(plans as any[], (r: any) => [r.planName, r.status, r.reference]);
 
   const load = useCallback(async () => {
     setLoading(true);
