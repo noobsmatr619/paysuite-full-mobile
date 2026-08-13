@@ -12,11 +12,18 @@ import {
   RowItem,
   Screen,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function InvoicesScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.invoiceFullNumber, r.customer?.firstName, r.customer?.lastName],
+    (r) => r.status,
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -55,9 +62,17 @@ export default function InvoicesScreen() {
     <Screen>
       <View style={{ padding: 16, flex: 1 }}>
         <PrimaryButton label="New invoice" onPress={() => router.push("/invoices/new")} />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            status={status}
+            onStatus={setStatus}
+            statuses={statuses}
+            placeholder="Search invoices"
+          />
+          <FlatList
           style={{ marginTop: 12 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />

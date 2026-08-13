@@ -11,11 +11,17 @@ import {
   RowItem,
   Screen,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function ProductsScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.name, r.code],
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,9 +53,14 @@ export default function ProductsScreen() {
           label="Add product"
           onPress={() => router.push("/products/new")}
         />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            placeholder="Search products"
+          />
+          <FlatList
           style={{ marginTop: 14 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />

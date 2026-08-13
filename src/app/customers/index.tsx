@@ -10,11 +10,17 @@ import {
   RowItem,
   Screen,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function CustomersScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.firstName, r.lastName, r.email, r.phoneNumber, r.companyName],
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -46,9 +52,14 @@ export default function CustomersScreen() {
           label="Add customer"
           onPress={() => router.push("/customers/new")}
         />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            placeholder="Search customers"
+          />
+          <FlatList
           style={{ marginTop: 14 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />

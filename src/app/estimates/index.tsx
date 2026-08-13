@@ -11,11 +11,18 @@ import {
   RowItem,
   Screen,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function EstimatesScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Estimate[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.estimateFullNumber, r.customer?.firstName],
+    (r) => r.status,
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,9 +54,17 @@ export default function EstimatesScreen() {
           label="New estimate"
           onPress={() => router.push("/estimates/new")}
         />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            status={status}
+            onStatus={setStatus}
+            statuses={statuses}
+            placeholder="Search estimates"
+          />
+          <FlatList
           style={{ marginTop: 12 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />

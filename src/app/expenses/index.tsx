@@ -4,11 +4,17 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/api/client";
 import type { Expense } from "@/types/paysuite";
 import { Empty, Loading, money, PrimaryButton, RowItem, Screen } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function ExpensesScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.title, r.category?.name],
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -37,9 +43,14 @@ export default function ExpensesScreen() {
     <Screen>
       <View style={{ padding: 16, flex: 1 }}>
         <PrimaryButton label="Add expense" onPress={() => router.push("/expenses/new")} />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            placeholder="Search expenses"
+          />
+          <FlatList
           style={{ marginTop: 12 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />

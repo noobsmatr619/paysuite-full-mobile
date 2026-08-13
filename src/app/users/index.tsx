@@ -11,11 +11,17 @@ import {
   Screen,
   Title,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function UsersScreen() {
   const [users, setUsers] = useState<any[]>([]);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    users as any[],
+    (r) => [r.firstName, r.lastName, r.email],
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);

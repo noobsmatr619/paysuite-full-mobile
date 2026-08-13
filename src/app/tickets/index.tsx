@@ -10,11 +10,18 @@ import {
   RowItem,
   Screen,
 } from "@/components/ui";
+import { ListFilter, useListFilter } from "@/components/ListFilter";
 
 export default function TicketsScreen() {
   const router = useRouter();
   const [rows, setRows] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const { query, setQuery, status, setStatus, statuses, filtered } = useListFilter(
+    rows,
+    (r) => [r.subject, r.department?.name, r.priority?.name],
+    (r) => r.status,
+  );
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -46,9 +53,17 @@ export default function TicketsScreen() {
           label="New ticket"
           onPress={() => router.push("/tickets/new")}
         />
-        <FlatList
+        <ListFilter
+            query={query}
+            onQuery={setQuery}
+            status={status}
+            onStatus={setStatus}
+            statuses={statuses}
+            placeholder="Search tickets"
+          />
+          <FlatList
           style={{ marginTop: 12 }}
-          data={rows}
+          data={filtered}
           keyExtractor={(i) => i.id}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={load} />
