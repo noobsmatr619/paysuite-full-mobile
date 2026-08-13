@@ -33,6 +33,9 @@ export default function MoreScreen() {
     { title: "Expense categories", href: "/categories" },
     { title: "Plan / renew", href: "/plan-expired" },
     { title: t("profile"), href: "/profile" },
+    { title: "Edit profile", href: "/profile/edit" },
+    { title: "Invite user", href: "/users/invite" },
+    { title: t("language"), href: "/language" },
   ] as const;
 
   return (
